@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  mysql_serve:
+    image: mysql:5.7.24
+    container_name: db_calculo_fte
+    ports:
+      - 33062:3306
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: victor
+      MYSQL_DATABASE: ftedb
+      MYSQL_ROOT_PASSWORD: 68354563
+  mongo_serve:
+    image: mongo
+    container_name: db_mongo_calculo_fte
+    ports:
+      - 27019:27017
+  composer_fte:
+    image: composer:latest
+    container_name: composer_calculo_fte
+    command: composer install --ignore-platform-reqs
+    volumes:
+      - /var/www/html/calculo_fte:/app
+  web:
+    build: .
+    ports:
+      - 9091:80
+    volumes:
+      - /var/www/html/calculo_fte:/opt/data
+    links:
+      - mysql_serve
+      - mongo_serve
